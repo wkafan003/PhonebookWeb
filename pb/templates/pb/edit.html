@@ -1,0 +1,27 @@
+{% extends 'pb/add.html' %}
+{% block title %}
+    Edit contact
+{% endblock %}
+{% block nav %}
+    <a href="{% url 'index' %}" class="breadcrumb">Phonebook</a>
+    <a href="#!" class="breadcrumb">Edit contact</a>
+{% endblock %}
+{% block l_name_default %}{{ phonebook.l_name }}{% endblock %}
+{% block f_name_default %}{{ phonebook.f_name }}{% endblock %}
+{% block m_name_default %}{{ phonebook.m_name }}{% endblock %}
+{% block gender_default %}{{ phonebook.gender }}{% endblock %}
+{% block email_default %}{{ phonebook.email }}{% endblock %}
+{% block tel_default %}{{ phonebook.tel }}{% endblock %}
+{% block job_default %}{{ phonebook.job }}{% endblock %}
+{% block post_default %}{{ phonebook.post }}{% endblock %}
+{% block b_num_default %}{{ phonebook.b_num }}{% endblock %}
+{% block ap_default %}{{ phonebook.ap }}{% endblock %}
+{% block form_action %}"{% url 'contactEdit' phonebook.id %}"{% endblock %}
+{% block button %}
+    <div class="col s3">
+        <button class="btn waves-effect waves-light" type="submit" name="action">
+            Save
+            <i class="material-icons right">save</i>
+        </button>
+    </div>
+{% endblock %}

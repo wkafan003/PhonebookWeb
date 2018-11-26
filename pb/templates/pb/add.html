@@ -1,0 +1,132 @@
+{% extends 'pb/base.html' %}
+{% block title %}
+    Add contact
+{% endblock %}
+{% block nav %}
+    <a href="{% url 'index' %}" class="breadcrumb">Phonebook</a>
+    <a href="#!" class="breadcrumb">Add contact</a>
+{% endblock %}
+{% block content %}
+    <div class="container" id="content">
+        <h4 class="header">Add contact</h4>
+        <div class="row">
+            <form method="post" action={% block form_action %}"{% url 'contactAdd' %}"{% endblock %} class="col s12">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="input-field col s6">
+                        <input value="{% block l_name_default %}{% endblock %}" class="validate" id="input_text"
+                               name="l_name" placeholder="Last name" type="text"
+                               data-length="32" required>
+                        <label for="input_text">Last name</label>
+                    </div>
+                    <div class="input-field col s6">
+                        <input value="{% block f_name_default %}{% endblock %}" class="validate" id="input_text"
+                               name="f_name" placeholder="First name" type="text"
+                               data-length="32" required>
+                        <label for="input_text">First name</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s6">
+                        <input value="{% block m_name_default %}{% endblock %}" class="validate" id="input_text"
+                               name="m_name" placeholder="Middle name" type="text"
+                               data-length="32" required>
+                        <label for="input_text">Middle name</label>
+                    </div>
+                    <div class="input-field col s6">
+                        <select value="" name="gender" required>
+                            <option value="" disabled selected>Choose gender</option>
+                            <option{% if 'male' == phonebook.gender %}
+                                selected
+                            {% endif %} value="male">Male
+                            </option>
+                            <option {% if 'female' == phonebook.gender %}
+                                selected
+                            {% endif %} value="female">Female
+                            </option>
+                        </select>
+                        <label>Gender select</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s6">
+                        <input value="{% block email_default %}{% endblock %}" class="validate" id="input_text"
+                               name="email" placeholder="email@site.com" type="email"
+                               data-length="32" required>
+                        <label for="input_text">Email adress</label>
+                    </div>
+                    <div class="input-field col s6">
+                        <input value="{% block tel_default %}{% endblock %}" class="validate" id="input_text" name="tel"
+                               placeholder="8-800-555-35-35" type="tel"
+                               data-length="32" required>
+                        <label for="input_text">Telephone</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s6">
+                        <input value="{% block job_default %}{% endblock %}" class="validate" id="input_text" name="job"
+                               placeholder="Job" type="text"
+                               data-length="32" required>
+                        <label for="input_text">Job</label>
+                    </div>
+                    <div class="input-field col s6">
+                        <input value="{% block post_default %}{% endblock %}" class="validate" id="input_text"
+                               name="post" placeholder="Post" type="text"
+                               data-length="32" required>
+                        <label for="input_text">Post</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s6">
+                        <select name="city" required>
+                            <option value="" disabled selected>Choose city</option>
+                            {% for city in cities %}
+                                <option {% if city.id == phonebook.city.id %}
+                                    selected
+                                {% endif %} value="{{ city.id }}">{{ city.c_value }}</option>
+                            {% endfor %}
+                        </select>
+                        <label>City select</label>
+                    </div>
+                    <div class="input-field col s6">
+                        <select name="street" required>
+                            <option value="" disabled selected>Choose street</option>
+                            {% for street in streets %}
+                                <option {% if street.id == phonebook.street.id %}
+                                    selected
+                                {% endif %} value="{{ street.id }}">{{ street.s_value }}</option>
+                            {% endfor %}
+                        </select>
+                        <label>Street select</label>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="input-field col s3">
+                        <input value="{% block b_num_default %}{% endblock %}" class="validate" id="input_text"
+                               name="b_num" placeholder="B num" type="number" min="1"
+                               required>
+                        <label for="input_text">Building number</label>
+                    </div>
+                    <div class="input-field col s3">
+                        <input value="{% block ap_default %}{% endblock %}" class="validate" id="input_text" name="ap"
+                               placeholder="ap num" type="number" min="1"
+                               required>
+                        <label for="input_text">Appartment number</label>
+                    </div>
+                    {% block button %}
+                        <div class="col s3">
+                            <button class="btn waves-effect waves-light" type="submit" name="action">
+                                Submit
+                                <i class="material-icons right">send</i>
+                            </button>
+                        </div>
+                    {% endblock %}
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+{% block scripts %}
+
+{% endblock %}

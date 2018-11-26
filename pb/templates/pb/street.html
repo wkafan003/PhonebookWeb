@@ -1,0 +1,116 @@
+{% extends 'pb/base.html' %}
+{% block title %}
+    Street list
+{% endblock %}
+{% block nav %}
+    <a href="{% url 'index' %}" class="breadcrumb">Phonebook</a>
+    <a href="#!" class="breadcrumb">Street list</a>
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <h5>Street list</h5>
+        <ul id="mainlist" class="collection">
+            {% for street in streets %}
+                <li class="collection-item">
+                    <div class="row">
+                        <div class="col s10">
+                            <input value="{{ street.id }}" hidden>
+                            <input value="{{ street.s_value }}" placeholder="{{ street.s_value }}" type="text"
+                                   maxlength="32" class="validate">
+
+                        </div>
+                        <div class="col s2" style="margin-top: 15px">
+                            <div class="secondary-content">
+                                <a><i class="material-icons">edit</i></a>
+                                <a><i class="material-icons">delete</i></a>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+        <div class="row">
+            <div class="col s11">
+                <input id="addi" placeholder="city name" type="text"
+                       maxlength="32" class="validate">
+            </div>
+            <div class="col s1" style="margin-top: 15px">
+                <a id="adda"><i class="material-icons">add</i></a>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}
+{% block scripts %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#adda").click(function () {
+                $addi =$("#addi");
+                if ($addi.val().length === 0) {
+                    M.toast({html: 'Empty field'});
+                    return
+                }
+                $.post("{% url 'streetAdd' %}",
+                    {
+                        city: $addi.val()
+                    },
+                    function (data, status) {
+                        v = $addi.val()
+                        $("#mainlist").append(
+                            "<li class=\"collection-item\">\n" +
+                            "                    <div class=\"row\">\n" +
+                            "                        <div class=\"col s10\">\n" +
+                            "                            <input value=\"" + data[0] + "\" hidden>\n" +
+                            "                            <input value=\"" + v + "\" placeholder=\"" + v + "\" type=\"text\"\n" +
+                            "                                   maxlength=\"32\" class=\"validate\">\n" +
+                            "\n" +
+                            "                        </div>\n" +
+                            "                        <div class=\"col s2\" style=\"margin-top: 15px\">\n" +
+                            "                            <div class=\"secondary-content\">\n" +
+                            "                                <a><i class=\"material-icons\">edit</i></a>\n" +
+                            "                                <a><i class=\"material-icons\">delete</i></a>\n" +
+                            "                            </div>\n" +
+                            "                        </div>\n" +
+                            "                    </div>\n" +
+                            "                </li>"
+                        );
+                        update();
+                        $("#addi").val("");
+                        M.toast({html: 'Sucsess add'})
+                    });
+            });
+            update();
+
+            function update() {
+                $l = $("#mainlist li");
+                $l.find("a").unbind();
+                for (let i = 0; i < $l.length; i++) {
+                    $buf = $l.eq(i);
+                    //delete
+                    $buf.find('a').eq(1).click(function () {
+                        $.post("{% url 'streetDelete' %}",
+                            {
+                                id: $buf.find('input').eq(0).val()
+                            },
+                            function (data, status) {
+                                $buf.remove();
+                                update();
+                                M.toast({html: 'Sucsess delete'});
+                            });
+                    });
+                    //edit
+                    $buf.find('a').eq(0).click(function () {
+                        $.post("{% url 'street' %}",
+                            {
+                                id: $buf.find('input').eq(0).val(),
+                                street: $buf.find('input').eq(1).val()
+                            },
+                            function (data, status) {
+                                M.toast({html: 'Sucsess edit'})
+                            });
+                    });
+                }
+            }
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,185 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="{% static 'pb/sass/materialize.css' %}" media="screen,projection"/>
+    {#    <link type="text/css" rel="stylesheet" href="{% static 'pb/sass/style.css' %}" media="screen,projection"/>#}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>{% block title %}My amazing site{% endblock %}</title>
+</head>
+
+<body>
+<nav>
+    <div class="nav-wrapper">
+        <div class="col s12">
+            {% block nav %}
+                <a href="{% url 'index' %}" class="breadcrumb">Phonebook</a>
+            {% endblock %}
+        </div>
+    </div>
+</nav>
+
+{% block content %}
+    <div id="content" class="row">
+        <div class="col s8">
+            <h3 class="header">Phonebook</h3>
+            <a href="{% url 'contactAdd' %}" class="waves-effect waves-light btn"><i
+                    class="material-icons right">face</i>Add contact</a>
+            <a href="{% url 'city' %}" class="waves-effect waves-light btn"><i class="material-icons right">reorder</i>Show
+                city list</a>
+            <a href="{% url 'street' %}" class="waves-effect waves-light btn"><i
+                    class="material-icons right">reorder</i>Show
+                street list</a>
+
+            <ul id="mainlist" class="collapsible popout"></ul>
+        </div>
+
+        <div class="col s4">
+            <h3>Search</h3>
+             <div id="schip" class="chips chips-placeholder"></div>
+            <a id="searchbar" class="btn waves-effect waves-teal"><i
+                    class="material-icons right">search</i>Search</a>
+        </div>
+    </div>
+{% endblock %}
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="{% static 'pb/js/materialize.js' %}"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.collapsible').collapsible();
+        $('input#input_text, textarea#textarea2').characterCounter();
+        $('select').formSelect();
+        $('.fixed-action-btn').floatingActionButton({
+            direction: 'left',
+            hoverEnabled: false
+        });
+        $('.chips-placeholder').chips({
+            placeholder: 'Enter search tag',
+            secondaryPlaceholder: '+Tag',
+        });
+        M.updateTextFields();
+        $('.sidenav').sidenav();
+    });
+</script>
+{% block scripts %}
+    <script type="text/javascript">
+        function update(msg) {
+            var $mainlist = $("#mainlist");
+            $mainlist.empty();
+            $mainlist.append(
+                "<li>\n" +
+                "                <div class=\"row\">\n" +
+                "                    <div class=\"col s1 offset-s5\">\n" +
+                "                        <div class=\"preloader-wrapper big active\">\n" +
+                "                            <div class=\"spinner-layer spinner-blue-only\">\n" +
+                "                                <div class=\"circle-clipper left\">\n" +
+                "                                    <div class=\"circle\"></div>\n" +
+                "                                </div>\n" +
+                "                                <div class=\"gap-patch\">\n" +
+                "                                    <div class=\"circle\"></div>\n" +
+                "                                </div>\n" +
+                "                                <div class=\"circle-clipper right\">\n" +
+                "                                    <div class=\"circle\"></div>\n" +
+                "                                </div>\n" +
+                "                            </div>\n" +
+                "                        </div>\n" +
+                "                    </div>\n" +
+                "                </div>\n" +
+                "            </li>"
+            );
+            setTimeout(function () {
+                $.get("{% url 'index' %}",
+                    {
+                        search: "Donald Duck",
+                        schips: msg,
+                    },
+                    function (data, status) {
+                        {#$mainlist = $("#mainlist");#}
+                        $mainlist.empty();
+                        for (i = 0; i < data.length; i++) {
+
+                            $mainlist.append(
+                                "<li>\n" +
+                                "                                <div class=\"collapsible-header\">\n" +
+                                "                                    <div>" + data[i]["l_name"] + " " + data[i]["f_name"] + " " + data[i]["m_name"] + " " + data[i]["tel"] + "</div>\n" +
+                                "\n" +
+                                "                                    <span class=\"badge\">\n" +
+                                "                                            <a href=\"/contact/" + data[i]["id"] + "/edit\"><i class=\"material-icons\">edit</i></a>\n" +
+                                "                                            <a href=\"/contact/" + data[i]["id"] + "/delete\"><i class=\"material-icons\">delete</i></a></span>\n" +
+                                "                                </div>\n" +
+                                "                                <div class=\"collapsible-body\">\n" +
+                                "                                    <table>\n" +
+                                "                                        <tbody>\n" +
+                                "                                        <tr>\n" +
+                                "                                            <td>Last name</td>\n" +
+                                "                                            <td>" + data[i]["l_name"] + "</td>\n" +
+                                "                                        </tr>\n" +
+                                "                                        <tr>\n" +
+                                "                                            <td>First name</td>\n" +
+                                "                                            <td>" + data[i]["f_name"] + "</td>\n" +
+                                "                                        </tr>\n" +
+                                "                                        <tr>\n" +
+                                "                                            <td>Middle name</td>\n" +
+                                "                                            <td>" + data[i]["m_name"] + "</td>\n" +
+                                "                                        </tr>\n" +
+                                "                                        <tr>\n" +
+                                "                                            <td>Gender</td>\n" +
+                                "                                            <td>" + data[i]["gender"] + "</td>\n" +
+                                "                                        </tr>\n" +
+                                "                                        <tr>\n" +
+                                "                                            <td>Email</td>\n" +
+                                "                                            <td>" + data[i]["email"] + "</td>\n" +
+                                "                                        </tr>\n" +
+                                "                                        <tr>\n" +
+                                "                                            <td>Telephone number</td>\n" +
+                                "                                            <td>" + data[i]["tel"] + "</td>\n" +
+                                "                                        </tr>\n" +
+                                "                                        <tr>\n" +
+                                "                                            <td>City</td>\n" +
+                                "                                            <td>" + data[i]["city"] + "</td>\n" +
+                                "                                        </tr>\n" +
+                                "                                        <tr>\n" +
+                                "                                            <td>Street</td>\n" +
+                                "                                            <td>" + data[i]["street"] + "</td>\n" +
+                                "                                        </tr>\n" +
+                                "                                        <tr>\n" +
+                                "                                            <td>Building number</td>\n" +
+                                "                                            <td>" + data[i]["b_num"] + "</td>\n" +
+                                "                                        </tr>\n" +
+                                "                                        <tr>\n" +
+                                "                                            <td>Appartment number</td>\n" +
+                                "                                            <td>" + data[i]["ap"] + "</td>\n" +
+                                "                                        </tr>\n" +
+                                "                                        <tr>\n" +
+                                "                                            <td>Jobs</td>\n" +
+                                "                                            <td>" + data[i]["job"] + "</td>\n" +
+                                "                                        </tr>\n" +
+                                "                                        <tr>\n" +
+                                "                                            <td>Post</td>\n" +
+                                "                                            <td>" + data[i]["post"] + "</td>\n" +
+                                "                                        </tr>\n" +
+                                "                                        </tbody>\n" +
+                                "                                    </table>\n" +
+                                "                                </div>\n" +
+                                "                            </li>"
+                                {#"<li> "+data[i]["city"]+" </li>"#}
+                            )
+                        }
+                    });
+            }, Math.floor((Math.random() * 500) + 500));
+
+        }
+
+        update("[]");
+        $(document).ready(function () {
+            $("#searchbar").click(function () {
+                update(JSON.stringify(M.Chips.getInstance($("#schip")).chipsData));
+            });
+        });
+    </script>
+{% endblock %}
+</body>
+</html>
